@@ -116,6 +116,37 @@
 				parent.$.colorbox.close();
 				return false;
 			});
+			$(".ajax_submit_button").click(function(e){
+				e.preventDefault();
+				var form = $(this).parents('form:first');
+				var address = form.attr('action');
+				var form_data = form.serialize()+'&ajax=true';
+				var form_method = form.attr('method');
+				if ( typeof form_method !== 'undefined' ) {
+					form_method = form_method.toUpperCase();
+				} else {
+					form_method = 'POST';
+				}
+
+				$.ajax({
+					address : address,
+					data : form_data,
+					type : form_method,
+					dataType : 'JSON',
+					success : function( data ) {
+						if( data.success === true ){
+							parent.oTable.fnReloadAjax();
+							parent.$.colorbox.close();
+						} else {
+							alert('{{Lang::get('admin.delete.error')}}');
+						}
+					},
+					error : function( data ) {
+						alert('{{Lang::get('admin.delete.error')}}');
+					}
+				});
+
+			})
 		});
 		$('.wysihtml5').wysihtml5();
        	$(prettyPrint)
